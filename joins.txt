@@ -1,0 +1,169 @@
+create table departments(dept_id int primary key, dept_name varchar(30) not null);
+create table employees(emp_id int primary key, emp_name varchar(50) not null, dept_id int references departments(dept_id));
+
+insert into departments(dept_id, dept_name) values(1, 'Sales');
+insert into departments(dept_id, dept_name) values(2, 'Engineering');
+insert into departments(dept_id, dept_name) values(3, 'HR');
+insert into departments(dept_id, dept_name) values(4, 'Marketing');
+insert into departments(dept_id, dept_name) values(5, 'R & D');
+
+insert into employees(emp_id, emp_name, dept_id) values(1, 'abc', 1);
+insert into employees(emp_id, emp_name, dept_id) values(2, 'def', 2);
+insert into employees(emp_id, emp_name, dept_id) values(3, 'ghi', 3);
+insert into employees(emp_id, emp_name, dept_id) values(4, 'jkl', 4);
+insert into employees(emp_id, emp_name, dept_id) values(5, 'mno', 1);
+insert into employees(emp_id, emp_name, dept_id) values(6, 'pqr', 2);
+insert into employees(emp_id, emp_name, dept_id) values(7, 'stu', 3);
+insert into employees(emp_id, emp_name, dept_id) values(8, 'vwxz', 4);
+
+-- Inner join
+-- Joins records from both tables using a common column
+mysql> select emp_id, emp_name, dept_name 
+    -> from employees
+    -> inner join departments
+    -> on departments.dept_id=employees.dept_id;
++--------+----------+-------------+
+| emp_id | emp_name | dept_name   |
++--------+----------+-------------+
+|      1 | abc      | Sales       |
+|      5 | mno      | Sales       |
+|      2 | def      | Engineering |
+|      6 | pqr      | Engineering |
+|      3 | ghi      | HR          |
+|      7 | stu      | HR          |
+|      4 | jkl      | Marketing   |
+|      8 | vwxz     | Marketing   |
++--------+----------+-------------+
+
+-- Right Join
+-- Returns common records from both tables using a common column
+-- Also includes extra records from the 2nd table not included in the inner join
+mysql> select emp_id, emp_name, dept_name
+    -> from employees
+    -> right join departments
+    -> on departments.dept_id=employees.dept_id;
++--------+----------+-------------+
+| emp_id | emp_name | dept_name   |
++--------+----------+-------------+
+|      1 | abc      | Sales       |
+|      5 | mno      | Sales       |
+|      2 | def      | Engineering |
+|      6 | pqr      | Engineering |
+|      3 | ghi      | HR          |
+|      7 | stu      | HR          |
+|      4 | jkl      | Marketing   |
+|      8 | vwxz     | Marketing   |
+|   NULL | NULL     | R & D       |
++--------+----------+-------------+
+
+-- Left Join
+-- Returns common records from both tables using a common column
+-- Also includes extra records from the 1st table not included in the inner join
+mysql> select emp_id, emp_name, dept_name
+    -> from departments
+    -> left join employees
+    -> on departments.dept_id=employees.dept_id;
++--------+----------+-------------+
+| emp_id | emp_name | dept_name   |
++--------+----------+-------------+
+|      1 | abc      | Sales       |
+|      5 | mno      | Sales       |
+|      2 | def      | Engineering |
+|      6 | pqr      | Engineering |
+|      3 | ghi      | HR          |
+|      7 | stu      | HR          |
+|      4 | jkl      | Marketing   |
+|      8 | vwxz     | Marketing   |
+|   NULL | NULL     | R & D       |
++--------+----------+-------------+
+
+-- Cross Join
+-- Basically a cartesian product(join) of all records in one table against
+-- all records of the other table 
+mysql> select * from employees, departments;
++--------+----------+---------+---------+-------------+
+| emp_id | emp_name | dept_id | dept_id | dept_name   |
++--------+----------+---------+---------+-------------+
+|      1 | abc      |       1 |       1 | Sales       |
+|      1 | abc      |       1 |       2 | Engineering |
+|      1 | abc      |       1 |       3 | HR          |
+|      1 | abc      |       1 |       4 | Marketing   |
+|      1 | abc      |       1 |       5 | R & D       |
+|      2 | def      |       2 |       1 | Sales       |
+|      2 | def      |       2 |       2 | Engineering |
+|      2 | def      |       2 |       3 | HR          |
+|      2 | def      |       2 |       4 | Marketing   |
+|      2 | def      |       2 |       5 | R & D       |
+|      3 | ghi      |       3 |       1 | Sales       |
+|      3 | ghi      |       3 |       2 | Engineering |
+|      3 | ghi      |       3 |       3 | HR          |
+|      3 | ghi      |       3 |       4 | Marketing   |
+|      3 | ghi      |       3 |       5 | R & D       |
+|      4 | jkl      |       4 |       1 | Sales       |
+|      4 | jkl      |       4 |       2 | Engineering |
+|      4 | jkl      |       4 |       3 | HR          |
+|      4 | jkl      |       4 |       4 | Marketing   |
+|      4 | jkl      |       4 |       5 | R & D       |
+|      5 | mno      |       1 |       1 | Sales       |
+|      5 | mno      |       1 |       2 | Engineering |
+|      5 | mno      |       1 |       3 | HR          |
+|      5 | mno      |       1 |       4 | Marketing   |
+|      5 | mno      |       1 |       5 | R & D       |
+|      6 | pqr      |       2 |       1 | Sales       |
+|      6 | pqr      |       2 |       2 | Engineering |
+|      6 | pqr      |       2 |       3 | HR          |
+|      6 | pqr      |       2 |       4 | Marketing   |
+|      6 | pqr      |       2 |       5 | R & D       |
+|      7 | stu      |       3 |       1 | Sales       |
+|      7 | stu      |       3 |       2 | Engineering |
+|      7 | stu      |       3 |       3 | HR          |
+|      7 | stu      |       3 |       4 | Marketing   |
+|      7 | stu      |       3 |       5 | R & D       |
+|      8 | vwxz     |       4 |       1 | Sales       |
+|      8 | vwxz     |       4 |       2 | Engineering |
+|      8 | vwxz     |       4 |       3 | HR          |
+|      8 | vwxz     |       4 |       4 | Marketing   |
+|      8 | vwxz     |       4 |       5 | R & D       |
++--------+----------+---------+---------+-------------+
+
+-- Natural Join
+-- Automatically joins on all same-named columns from the two tables
+mysql> SELECT *
+    -> FROM employees natural join departments;
++---------+--------+----------+-------------+
+| dept_id | emp_id | emp_name | dept_name   |
++---------+--------+----------+-------------+
+|       1 |      1 | abc      | Sales       |
+|       1 |      5 | mno      | Sales       |
+|       2 |      2 | def      | Engineering |
+|       2 |      6 | pqr      | Engineering |
+|       3 |      3 | ghi      | HR          |
+|       3 |      7 | stu      | HR          |
+|       4 |      4 | jkl      | Marketing   |
+|       4 |      8 | vwxz     | Marketing   |
++---------+--------+----------+-------------+
+
+drop table employees;
+mysql> create table employees(emp_id int, emp_name varchar(50) not null, manager_id int);
+insert into employees(emp_id, emp_name, manager_id) values(1, 'ABC', 5);
+insert into employees(emp_id, emp_name, manager_id) values(2, 'DEF', 4);
+insert into employees(emp_id, emp_name, manager_id) values(3, 'GHI', 3);
+insert into employees(emp_id, emp_name, manager_id) values(4, 'JKL', 2);
+insert into employees(emp_id, emp_name, manager_id) values(5, 'MNO', 1);
+insert into employees(emp_id, emp_name, manager_id) values(6, 'PQR', 6);
+-- Self Join
+-- Joining a table to itself
+mysql> select e.emp_id "Employee ID", e.emp_name "Employee", m.emp_name "Manager"
+    -> from employees e inner join employees m
+    -> on e.emp_id = m.manager_id;
++-------------+----------+---------+
+| Employee ID | Employee | Manager |
++-------------+----------+---------+
+|           5 | MNO      | ABC     |
+|           4 | JKL      | DEF     |
+|           3 | GHI      | GHI     |
+|           2 | DEF      | JKL     |
+|           1 | ABC      | MNO     |
+|           6 | PQR      | PQR     |
++-------------+----------+---------+
+
